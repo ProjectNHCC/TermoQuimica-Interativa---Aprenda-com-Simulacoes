@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TermoQuímica Interativa - Aprenda com Simulações</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .fire-animation {
+            background: radial-gradient(circle, #ff6b35, #ff4757, #ff3838);
+            animation: fire-flicker 0.5s infinite alternate;
+        }
+        
+        .ice-animation {
+            background: radial-gradient(circle, #3742fa, #2f3542, #40739e);
+            animation: ice-pulse 1s infinite alternate;
+        }
+        
+        @keyframes fire-flicker {
+            0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            100% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+        }
+        
+        @keyframes ice-pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .thermometer {
+            background: linear-gradient(to top, #ff4757 0%, #ff4757 var(--temp, 20%), #e1e5e9 var(--temp, 20%), #e1e5e9 100%);
+            transition: all 0.5s ease;
+        }
+        
+        .reaction-glow {
+            box-shadow: 0 0 20px rgba(255, 103, 53, 0.5);
+            animation: glow-pulse 2s infinite alternate;
+        }
+        
+        @keyframes glow-pulse {
+            0% { box-shadow: 0 0 20px rgba(255, 103, 53, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(255, 103, 53, 0.7); }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#667eea'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm z-50 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold text-primary">🧪 TermoQuímica Interativa</h1>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#intro" class="nav-link hover:text-primary transition-colors">Introdução</a>
+                    <a href="#conceitos" class="nav-link hover:text-primary transition-colors">Conceitos</a>
+                    <a href="#tipos" class="nav-link hover:text-primary transition-colors">Endo vs Exo</a>
+                    <a href="#simulador" class="nav-link hover:text-primary transition-colors">Simulador</a>
+                    <a href="#exercicios" class="nav-link hover:text-primary transition-colors">Exercícios</a>
+                    <a href="#aplicacoes" class="nav-link hover:text-primary transition-colors">Aplicações</a>
+                </div>
+                <button id="mobile-menu" class="md:hidden p-2">
+                    <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></div>
+                    <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-300 mb-1"></div>
+                    <div class="w-6 h-0.5 bg-gray-600 dark:bg-gray-300"></div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-nav" class="fixed top-16 left-0 w-full bg-white dark:bg-gray-900 z-40 hidden">
+        <div class="container mx-auto px-4 py-4 space-y-4">
+            <a href="#intro" class="block hover:text-primary transition-colors">Introdução</a>
+            <a href="#conceitos" class="block hover:text-primary transition-colors">Conceitos</a>
+            <a href="#tipos" class="block hover:text-primary transition-colors">Endo vs Exo</a>
+            <a href="#simulador" class="block hover:text-primary transition-colors">Simulador</a>
+            <a href="#exercicios" class="block hover:text-primary transition-colors">Exercícios</a>
+            <a href="#aplicacoes" class="block hover:text-primary transition-colors">Aplicações</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="intro" class="pt-20 pb-16 gradient-bg text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                🔥 Termoquímica 🧊<br>
+                <span class="text-yellow-300">Interativa</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                Explore o fascinante mundo das reações químicas e suas trocas de calor através de simulações interativas
+            </p>
+            <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+                <div class="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-3xl mb-2">🌡️</div>
+                    <h3 class="font-semibold mb-2">Medição de Calor</h3>
+                    <p class="text-sm">Aprenda como medir e calcular as variações de temperatura em reações químicas</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-3xl mb-2">⚗️</div>
+                    <h3 class="font-semibold mb-2">Simulações Reais</h3>
+                    <p class="text-sm">Execute experimentos virtuais em um laboratório interativo completo</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
+                    <div class="text-3xl mb-2">📊</div>
+                    <h3 class="font-semibold mb-2">Gráficos Dinâmicos</h3>
+                    <p class="text-sm">Visualize dados em tempo real com gráficos interativos e intuitivos</p>
+                </div>
+            </div>
+            <a href="#conceitos" class="inline-block bg-yellow-400 text-gray-900 px-8 py-3 rounded-full font-semibold hover:bg-yellow-300 transition-colors">
+                Começar Aprendizado
+            </a>
+        </div>
+    </section>
+
+    <!-- Conceitos Fundamentais -->
+    <section id="conceitos" class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">O que é Termoquímica?</h2>
+            
+            <div class="max-w-4xl mx-auto mb-12">
+                <div class="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-lg mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-primary">Definição</h3>
+                    <p class="text-lg mb-4">
+                        A <strong>Termoquímica</strong> é o ramo da química que estuda as variações de energia, 
+                        especialmente na forma de calor, que acompanham as reações químicas e mudanças de estado físico.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        No nosso cotidiano, a termoquímica está presente em processos como o derretimento do gelo, 
+                        a combustão da madeira na lareira, ou até mesmo a digestão dos alimentos em nosso corpo.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+                        <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">🔧</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Sistema</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            Parte do universo que está sendo estudada (ex: reagentes em um tubo de ensaio)
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+                        <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">🌍</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Entorno</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            Tudo que está ao redor do sistema e pode interagir com ele
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+                        <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl">📈</span>
+                        </div>
+                        <h4 class="font-semibold mb-2">Variação de Entalpia (ΔH)</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            Medida da energia absorvida ou liberada durante uma reação
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-2xl mx-auto bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg border-l-4 border-yellow-400">
+                <h4 class="font-semibold mb-2 text-yellow-800 dark:text-yellow-200">💡 Curiosidade</h4>
+                <p class="text-yellow-700 dark:text-yellow-300">
+                    O corpo humano funciona como uma "máquina termoquímica"! Quando comemos, as reações de digestão 
+                    liberam energia que mantém nossa temperatura corporal e fornece energia para todas as nossas atividades.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Endotermia vs Exotermia -->
+    <section id="tipos" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Endotermia vs Exotermia</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Reação Endotérmica -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20 p-8 rounded-lg border-2 border-blue-200 dark:border-blue-700">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 ice-animation rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-2xl">🧊</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-blue-700 dark:text-blue-300">Reação Endotérmica</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold mb-2">Definição:</h4>
+                            <p class="text-sm">Reação que <strong>absorve calor</strong> do ambiente. ΔH > 0 (positivo)</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-2">Exemplos:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Derretimento do gelo</li>
+                                <li>• Evaporação da água</li>
+                                <li>• Dissolução do cloreto de amônio</li>
+                                <li>• Fotossíntese</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-2">Gráfico de Entalpia:</h4>
+                            <div class="bg-white p-4 rounded">
+                                <canvas id="endothermic-chart" width="200" height="120"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-100 dark:bg-blue-900/50 p-3 rounded">
+                            <p class="text-xs text-blue-800 dark:text-blue-200">
+                                <strong>Característica:</strong> O ambiente ao redor fica mais frio pois o calor é absorvido pela reação.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reação Exotérmica -->
+                <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/20 p-8 rounded-lg border-2 border-red-200 dark:border-red-700">
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 fire-animation rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span class="text-2xl">🔥</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-red-700 dark:text-red-300">Reação Exotérmica</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-semibold mb-2">Definição:</h4>
+                            <p class="text-sm">Reação que <strong>libera calor</strong> para o ambiente. ΔH < 0 (negativo)</p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-2">Exemplos:</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Combustão da madeira</li>
+                                <li>• Respiração celular</li>
+                                <li>• Neutralização ácido-base</li>
+                                <li>• Solidificação da água</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold mb-2">Gráfico de Entalpia:</h4>
+                            <div class="bg-white p-4 rounded">
+                                <canvas id="exothermic-chart" width="200" height="120"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-red-100 dark:bg-red-900/50 p-3 rounded">
+                            <p class="text-xs text-red-800 dark:text-red-200">
+                                <strong>Característica:</strong> O ambiente ao redor fica mais quente pois o calor é liberado pela reação.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulador Interativo -->
+    <section id="simulador" class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4">🧪 Laboratório do Fogo e Gelo</h2>
+            <p class="text-center text-gray-600 dark:text-gray-300 mb-12">
+                Execute reações químicas virtuais e calcule a variação de entalpia
+            </p>
+            
+            <!-- Pontuação -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div class="text-lg font-semibold">
+                            🏆 Pontuação: <span id="score" class="text-primary">0</span>
+                        </div>
+                        <div class="text-lg font-semibold">
+                            ⚡ Sequência: <span id="streak" class="text-green-500">0</span>
+                        </div>
+                        <div class="text-lg font-semibold">
+                            🎯 Acertos: <span id="correct-answers">0</span>/<span id="total-attempts">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interface do Simulador -->
+            <div class="max-w-6xl mx-auto">
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Painel de Controle -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg space-y-6">
+                            <h3 class="text-xl font-semibold mb-4">🔬 Painel de Controle</h3>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Selecione uma Reação:</label>
+                                <select id="reaction-select" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-base">
+                                    <option value="">Escolha uma reação...</option>
+                                    <option value="ice-melting">Derretimento do Gelo</option>
+                                    <option value="combustion">Combustão do Metano</option>
+                                    <option value="neutralization">Neutralização (HCl + NaOH)</option>
+                                    <option value="ammonium-dissolution">Dissolução NH₄Cl</option>
+                                    <option value="photosynthesis">Fotossíntese</option>
+                                </select>
+                            </div>
+
+                            <button id="start-reaction" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50" disabled>
+                                🚀 Iniciar Reação
+                            </button>
+
+                            <!-- Dados da Reação -->
+                            <div id="reaction-data" class="hidden space-y-4">
+                                <h4 class="font-semibold">📊 Dados da Reação:</h4>
+                                <div id="reaction-info" class="text-sm space-y-2"></div>
+                            </div>
+
+                            <!-- Quiz -->
+                            <div id="quiz-section" class="hidden space-y-4">
+                                <h4 class="font-semibold">❓ Perguntas:</h4>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Tipo de reação:</label>
+                                    <select id="reaction-type" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base">
+                                        <option value="">Selecione...</option>
+                                        <option value="endothermic">Endotérmica</option>
+                                        <option value="exothermic">Exotérmica</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Calcule ΔH (kJ/mol):</label>
+                                    <input type="number" id="enthalpy-calc" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base" placeholder="Ex: -890.3">
+                                </div>
+
+                                <button id="submit-answer" class="w-full bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600 transition-colors">
+                                    ✅ Verificar Respostas
+                                </button>
+                            </div>
+
+                            <!-- Feedback -->
+                            <div id="feedback" class="hidden p-4 rounded-lg"></div>
+                        </div>
+                    </div>
+
+                    <!-- Área de Simulação -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4">🧪 Bancada do Laboratório</h3>
+                            
+                            <!-- Canvas da Simulação -->
+                            <div class="relative bg-gray-100 dark:bg-gray-600 rounded-lg p-4 mb-6" style="height: 300px;">
+                                <canvas id="lab-canvas" class="w-full h-full"></canvas>
+                                
+                                <!-- Termômetro Virtual -->
+                                <div class="absolute top-4 right-4 w-8 h-48 bg-gray-300 rounded-full overflow-hidden">
+                                    <div class="w-full bg-red-500 rounded-full transition-all duration-1000 thermometer" 
+                                         id="thermometer" style="--temp: 25%; height: 25%; margin-top: auto;"></div>
+                                    <div class="absolute -right-8 top-0 text-xs">50°C</div>
+                                    <div class="absolute -right-8 bottom-0 text-xs">0°C</div>
+                                </div>
+                                
+                                <!-- Indicador de Status -->
+                                <div id="reaction-status" class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded">
+                                    Aguardando reação...
+                                </div>
+                            </div>
+
+                            <!-- Gráfico de Temperatura -->
+                            <div class="bg-gray-50 dark:bg-gray-600 p-4 rounded">
+                                <h4 class="font-semibold mb-2">📈 Gráfico Temperatura vs Tempo</h4>
+                                <canvas id="temp-chart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exercícios -->
+    <section id="exercicios" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">📚 Exercícios e Fixação</h2>
+            
+            <div class="max-w-4xl mx-auto space-y-8">
+                <!-- Exercício 1 -->
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Exercício 1: Cálculo de ΔH</h3>
+                    <p class="mb-4">
+                        Na combustão completa de 1 mol de metano (CH₄), a temperatura de 100g de água aumentou de 20°C para 85°C. 
+                        Calcule a variação de entalpia da reação. (Considere: calor específico da água = 4,18 J/g°C)
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Sua resposta (em kJ/mol):</label>
+                            <input type="number" id="ex1-answer" class="w-full max-w-md p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base" placeholder="Ex: -890">
+                        </div>
+                        <button onclick="checkExercise(1)" class="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 transition-colors">
+                            Verificar
+                        </button>
+                        <div id="ex1-feedback" class="hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Exercício 2 -->
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Exercício 2: Interpretação de Gráfico</h3>
+                    <p class="mb-4">
+                        Observe o gráfico abaixo e identifique se a reação é endotérmica ou exotérmica:
+                    </p>
+                    
+                    <div class="bg-gray-100 dark:bg-gray-600 p-4 rounded mb-4">
+                        <canvas id="ex2-chart" width="300" height="200"></canvas>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Tipo de reação:</label>
+                            <select id="ex2-answer" class="w-full max-w-md p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base">
+                                <option value="">Selecione...</option>
+                                <option value="endothermic">Endotérmica</option>
+                                <option value="exothermic">Exotérmica</option>
+                            </select>
+                        </div>
+                        <button onclick="checkExercise(2)" class="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 transition-colors">
+                            Verificar
+                        </button>
+                        <div id="ex2-feedback" class="hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Exercício 3 -->
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Exercício 3: Aplicação Prática</h3>
+                    <p class="mb-4">
+                        Qual seria a classificação termoquímica dos seguintes processos?
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-medium mb-2">a) Cozinhar um ovo:</p>
+                                <select id="ex3a-answer" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base">
+                                    <option value="">Selecione...</option>
+                                    <option value="endothermic">Endotérmica</option>
+                                    <option value="exothermic">Exotérmica</option>
+                                </select>
+                            </div>
+                            <div>
+                                <p class="font-medium mb-2">b) Explosão de fogos de artifício:</p>
+                                <select id="ex3b-answer" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-600 text-base">
+                                    <option value="">Selecione...</option>
+                                    <option value="endothermic">Endotérmica</option>
+                                    <option value="exothermic">Exotérmica</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="checkExercise(3)" class="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 transition-colors">
+                            Verificar
+                        </button>
+                        <div id="ex3-feedback" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aplicações Reais -->
+    <section id="aplicacoes" class="py-16 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">🌍 Aplicações Reais da Termoquímica</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">🏭</div>
+                    <h3 class="text-xl font-semibold mb-4">Indústria</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Siderurgia:</strong> Produção de ferro e aço</li>
+                        <li>• <strong>Petroquímica:</strong> Refino de petróleo</li>
+                        <li>• <strong>Cimenteiras:</strong> Produção de cimento</li>
+                        <li>• <strong>Vidros:</strong> Fusão de materiais</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">🚗</div>
+                    <h3 class="text-xl font-semibold mb-4">Motores e Energia</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Motores:</strong> Combustão interna</li>
+                        <li>• <strong>Foguetes:</strong> Propulsão espacial</li>
+                        <li>• <strong>Usinas:</strong> Geração de energia</li>
+                        <li>• <strong>Baterias:</strong> Armazenamento energético</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">❄️</div>
+                    <h3 class="text-xl font-semibold mb-4">Refrigeração</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Geladeiras:</strong> Compressores</li>
+                        <li>• <strong>Ar-condicionado:</strong> Ciclo térmico</li>
+                        <li>• <strong>Criogenia:</strong> Temperaturas extremas</li>
+                        <li>• <strong>Freezers:</strong> Conservação</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">💊</div>
+                    <h3 class="text-xl font-semibold mb-4">Medicina e Biologia</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Metabolismo:</strong> Digestão e respiração</li>
+                        <li>• <strong>Termoterapia:</strong> Tratamentos térmicos</li>
+                        <li>• <strong>Medicamentos:</strong> Estabilidade térmica</li>
+                        <li>• <strong>Diagnóstico:</strong> Calorimetria</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">🥘</div>
+                    <h3 class="text-xl font-semibold mb-4">Alimentação</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Cozimento:</strong> Transformações químicas</li>
+                        <li>• <strong>Fermentação:</strong> Pães e bebidas</li>
+                        <li>• <strong>Conservação:</strong> Pasteurização</li>
+                        <li>• <strong>Caramelização:</strong> Doces e sobremesas</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg">
+                    <div class="text-4xl mb-4">🌱</div>
+                    <h3 class="text-xl font-semibold mb-4">Meio Ambiente</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>• <strong>Fotossíntese:</strong> Absorção de CO₂</li>
+                        <li>• <strong>Compostagem:</strong> Decomposição orgânica</li>
+                        <li>• <strong>Aquecimento global:</strong> Efeito estufa</li>
+                        <li>• <strong>Energia solar:</strong> Conversão térmica</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">🧪 TermoQuímica Interativa</h3>
+                    <p class="text-gray-300 text-sm">
+                        Plataforma educacional para o ensino de termoquímica através de simulações interativas.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">📚 Recursos</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#conceitos" class="hover:text-white transition-colors">Conceitos Básicos</a></li>
+                        <li><a href="#simulador" class="hover:text-white transition-colors">Simulador</a></li>
+                        <li><a href="#exercicios" class="hover:text-white transition-colors">Exercícios</a></li>
+                        <li><a href="#aplicacoes" class="hover:text-white transition-colors">Aplicações</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">🔗 Links Úteis</h4>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="https://www.infoescola.com/quimica/termoquimica/" target="_blank" class="hover:text-white transition-colors">InfoEscola - Termoquímica</a></li>
+                        <li><a href="https://mundoeducacao.uol.com.br/quimica/termoquimica.htm" target="_blank" class="hover:text-white transition-colors">Mundo Educação</a></li>
+                        <li><a href="https://brasilescola.uol.com.br/quimica/termoquimica.htm" target="_blank" class="hover:text-white transition-colors">Brasil Escola</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">📞 Contato</h4>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <p>📧 contato@termoquimica.edu</p>
+                        <p>📱 (11) 9999-9999</p>
+                        <p>🌐 www.termoquimica-interativa.com</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-300">
+                <p>&copy; 2024 TermoQuímica Interativa. Material educacional desenvolvido para fins didáticos.</p>
+                <p class="mt-2">
+                    <strong>Referências:</strong> Atkins, P. & Jones, L. Princípios de Química | Brown, T. Química: A Ciência Central
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode setup
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.classList.toggle('hidden');
+        });
+
+        // Game state
+        let gameState = {
+            score: 0,
+            streak: 0,
+            correctAnswers: 0,
+            totalAttempts: 0,
+            currentReaction: null,
+            tempChart: null
+        };
+
+        // Reaction data
+        const reactions = {
+            'ice-melting': {
+                name: 'Derretimento do Gelo',
+                type: 'endothermic',
+                equation: 'H₂O(s) → H₂O(l)',
+                enthalpy: 6.01,
+                mass: 100,
+                tempInitial: 0,
+                tempFinal: 25,
+                description: 'O gelo absorve calor para mudar de estado',
+                animation: 'ice'
+            },
+            'combustion': {
+                name: 'Combustão do Metano',
+                type: 'exothermic',
+                equation: 'CH₄ + 2O₂ → CO₂ + 2H₂O',
+                enthalpy: -890.3,
+                mass: 16,
+                tempInitial: 25,
+                tempFinal: 800,
+                description: 'A combustão libera grande quantidade de calor',
+                animation: 'fire'
+            },
+            'neutralization': {
+                name: 'Neutralização (HCl + NaOH)',
+                type: 'exothermic',
+                equation: 'HCl + NaOH → NaCl + H₂O',
+                enthalpy: -57.3,
+                mass: 40,
+                tempInitial: 25,
+                tempFinal: 35,
+                description: 'Reação ácido-base que libera calor',
+                animation: 'reaction'
+            },
+            'ammonium-dissolution': {
+                name: 'Dissolução NH₄Cl',
+                type: 'endothermic',
+                equation: 'NH₄Cl(s) → NH₄⁺(aq) + Cl⁻(aq)',
+                enthalpy: 14.8,
+                mass: 53.5,
+                tempInitial: 25,
+                tempFinal: 15,
+                description: 'A dissolução absorve calor do ambiente',
+                animation: 'dissolution'
+            },
+            'photosynthesis': {
+                name: 'Fotossíntese',
+                type: 'endothermic',
+                equation: '6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂',
+                enthalpy: 2870,
+                mass: 180,
+                tempInitial: 25,
+                tempFinal: 25,
+                description: 'Plantas absorvem energia solar para produzir glicose',
+                animation: 'photosynthesis'
+            }
+        };
+
+        // Initialize charts
+        function initializeCharts() {
+            // Endothermic chart
+            const endoCtx = document.getElementById('endothermic-chart').getContext('2d');
+            new Chart(endoCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Reagentes', 'Estado de Transição', 'Produtos'],
+                    datasets: [{
+                        label: 'Energia',
+                        data: [0, 50, 20],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { title: { display: true, text: 'Entalpia (kJ/mol)' } },
+                        x: { title: { display: true, text: 'Progresso da Reação' } }
+                    }
+                }
+            });
+
+            // Exothermic chart
+            const exoCtx = document.getElementById('exothermic-chart').getContext('2d');
+            new Chart(exoCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Reagentes', 'Estado de Transição', 'Produtos'],
+                    datasets: [{
+                        label: 'Energia',
+                        data: [20, 50, 0],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { title: { display: true, text: 'Entalpia (kJ/mol)' } },
+                        x: { title: { display: true, text: 'Progresso da Reação' } }
+                    }
+                }
+            });
+
+            // Exercise 2 chart
+            const ex2Ctx = document.getElementById('ex2-chart').getContext('2d');
+            new Chart(ex2Ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Reagentes', 'Estado de Transição', 'Produtos'],
+                    datasets: [{
+                        label: 'Energia',
+                        data: [30, 60, 10],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { title: { display: true, text: 'Entalpia (kJ/mol)' } },
+                        x: { title: { display: true, text: 'Progresso da Reação' } }
+                    }
+                }
+            });
+        }
+
+        // Simulator functionality
+        document.getElementById('reaction-select').addEventListener('change', function() {
+            const reactionId = this.value;
+            const startButton = document.getElementById('start-reaction');
+            
+            if (reactionId) {
+                startButton.disabled = false;
+                gameState.currentReaction = reactions[reactionId];
+                displayReactionInfo(gameState.currentReaction);
+            } else {
+                startButton.disabled = true;
+                document.getElementById('reaction-data').classList.add('hidden');
+            }
+        });
+
+        function displayReactionInfo(reaction) {
+            const infoDiv = document.getElementById('reaction-info');
+            const dataDiv = document.getElementById('reaction-data');
+            
+            infoDiv.innerHTML = `
+                <div><strong>Equação:</strong> ${reaction.equation}</div>
+                <div><strong>Massa:</strong> ${reaction.mass} g</div>
+                <div><strong>Temp. Inicial:</strong> ${reaction.tempInitial}°C</div>
+                <div><strong>Temp. Final:</strong> ${reaction.tempFinal}°C</div>
+                <div><strong>Descrição:</strong> ${reaction.description}</div>
+            `;
+            
+            dataDiv.classList.remove('hidden');
+        }
+
+        document.getElementById('start-reaction').addEventListener('click', function() {
+            if (!gameState.currentReaction) return;
+            
+            const reaction = gameState.currentReaction;
+            
+            // Update status
+            document.getElementById('reaction-status').textContent = `Executando: ${reaction.name}`;
+            
+            // Animate thermometer
+            const thermometer = document.getElementById('thermometer');
+            const tempPercent = ((reaction.tempFinal / 50) * 100);
+            thermometer.style.setProperty('--temp', `${tempPercent}%`);
+            
+            // Create temperature chart
+            setTimeout(() => {
+                createTemperatureChart(reaction);
+                showQuiz();
+            }, 2000);
+            
+            // Canvas animation
+            animateReaction(reaction);
+        });
+
+        function createTemperatureChart(reaction) {
+            const ctx = document.getElementById('temp-chart').getContext('2d');
+            
+            if (gameState.tempChart) {
+                gameState.tempChart.destroy();
+            }
+            
+            const timeData = [0, 1, 2, 3, 4, 5];
+            const tempData = timeData.map(t => {
+                if (t === 0) return reaction.tempInitial;
+                if (t >= 4) return reaction.tempFinal;
+                const progress = t / 4;
+                return reaction.tempInitial + (reaction.tempFinal - reaction.tempInitial) * progress;
+            });
+            
+            gameState.tempChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timeData.map(t => `${t}s`),
+                    datasets: [{
+                        label: 'Temperatura (°C)',
+                        data: tempData,
+                        borderColor: reaction.type === 'exothermic' ? '#ef4444' : '#3b82f6',
+                        backgroundColor: reaction.type === 'exothermic' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { title: { display: true, text: 'Temperatura (°C)' } },
+                        x: { title: { display: true, text: 'Tempo (s)' } }
+                    }
+                }
+            });
+        }
+
+        function animateReaction(reaction) {
+            const canvas = document.getElementById('lab-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Clear canvas
+            ctx.fillStyle = '#f3f4f6';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw lab equipment
+            drawLabEquipment(ctx, canvas.width, canvas.height);
+            
+            // Animate based on reaction type
+            if (reaction.animation === 'fire') {
+                animateFire(ctx, canvas.width, canvas.height);
+            } else if (reaction.animation === 'ice') {
+                animateIce(ctx, canvas.width, canvas.height);
+            } else {
+                animateGenericReaction(ctx, canvas.width, canvas.height, reaction.type);
+            }
+        }
+
+        function drawLabEquipment(ctx, width, height) {
+            // Draw beaker
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(width/2 - 60, height/2 + 40);
+            ctx.lineTo(width/2 - 50, height/2 - 40);
+            ctx.lineTo(width/2 + 50, height/2 - 40);
+            ctx.lineTo(width/2 + 60, height/2 + 40);
+            ctx.stroke();
+            
+            // Draw liquid
+            ctx.fillStyle = '#60a5fa';
+            ctx.fillRect(width/2 - 45, height/2 - 20, 90, 50);
+        }
+
+        function animateFire(ctx, width, height) {
+            let frame = 0;
+            const animate = () => {
+                if (frame < 60) {
+                    // Draw flame effect
+                    ctx.fillStyle = `rgba(255, ${Math.random() * 100 + 100}, 0, 0.8)`;
+                    ctx.beginPath();
+                    ctx.arc(width/2 + (Math.random() - 0.5) * 20, height/2 + (Math.random() - 0.5) * 20, Math.random() * 10 + 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    frame++;
+                    requestAnimationFrame(animate);
+                }
+            };
+            animate();
+        }
+
+        function animateIce(ctx, width, height) {
+            // Draw ice crystals
+            for (let i = 0; i < 10; i++) {
+                ctx.fillStyle = '#bfdbfe';
+                ctx.beginPath();
+                ctx.arc(width/2 + (Math.random() - 0.5) * 80, height/2 + (Math.random() - 0.5) * 40, Math.random() * 5 + 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animateGenericReaction(ctx, width, height, type) {
+            const color = type === 'exothermic' ? '#fca5a5' : '#93c5fd';
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, 30, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function showQuiz() {
+            document.getElementById('quiz-section').classList.remove('hidden');
+        }
+
+        document.getElementById('submit-answer').addEventListener('click', function() {
+            const reactionType = document.getElementById('reaction-type').value;
+            const enthalpyCalc = parseFloat(document.getElementById('enthalpy-calc').value);
+            const reaction = gameState.currentReaction;
+            
+            gameState.totalAttempts++;
+            
+            let correct = 0;
+            let feedback = '<div class="space-y-2">';
+            
+            // Check reaction type
+            if (reactionType === reaction.type) {
+                correct++;
+                feedback += '<div class="text-green-600">✅ Tipo de reação correto!</div>';
+            } else {
+                feedback += `<div class="text-red-600">❌ Tipo incorreto. Resposta: ${reaction.type === 'endothermic' ? 'Endotérmica' : 'Exotérmica'}</div>`;
+            }
+            
+            // Check enthalpy calculation
+            const tolerance = Math.abs(reaction.enthalpy * 0.05); // 5% tolerance
+            if (Math.abs(enthalpyCalc - reaction.enthalpy) <= tolerance) {
+                correct++;
+                feedback += '<div class="text-green-600">✅ Cálculo de ΔH correto!</div>';
+            } else {
+                feedback += `<div class="text-red-600">❌ ΔH incorreto. Resposta: ${reaction.enthalpy} kJ/mol</div>`;
+            }
+            
+            feedback += '</div>';
+            
+            // Update score
+            if (correct === 2) {
+                gameState.correctAnswers++;
+                gameState.streak++;
+                gameState.score += 100 + (gameState.streak * 10);
+                feedback += '<div class="mt-2 p-2 bg-green-100 text-green-800 rounded">🎉 Perfeito! +' + (100 + gameState.streak * 10) + ' pontos</div>';
+            } else if (correct === 1) {
+                gameState.score += 50;
+                gameState.streak = 0;
+                feedback += '<div class="mt-2 p-2 bg-yellow-100 text-yellow-800 rounded">👍 Parcialmente correto! +50 pontos</div>';
+            } else {
+                gameState.streak = 0;
+                feedback += '<div class="mt-2 p-2 bg-red-100 text-red-800 rounded">💪 Continue tentando!</div>';
+            }
+            
+            // Show feedback
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = feedback;
+            feedbackDiv.className = 'p-4 rounded-lg ' + (correct === 2 ? 'bg-green-50 dark:bg-green-900/20' : correct === 1 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-red-50 dark:bg-red-900/20');
+            feedbackDiv.classList.remove('hidden');
+            
+            // Update UI
+            updateScoreDisplay();
+            
+            // Reset form
+            setTimeout(() => {
+                document.getElementById('reaction-type').value = '';
+                document.getElementById('enthalpy-calc').value = '';
+                document.getElementById('quiz-section').classList.add('hidden');
+                document.getElementById('feedback').classList.add('hidden');
+                document.getElementById('reaction-select').value = '';
+                document.getElementById('start-reaction').disabled = true;
+                document.getElementById('reaction-data').classList.add('hidden');
+                document.getElementById('reaction-status').textContent = 'Aguardando reação...';
+            }, 5000);
+        });
+
+        function updateScoreDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('streak').textContent = gameState.streak;
+            document.getElementById('correct-answers').textContent = gameState.correctAnswers;
+            document.getElementById('total-attempts').textContent = gameState.totalAttempts;
+        }
+
+        // Exercise functions
+        function checkExercise(exerciseNum) {
+            const exercises = {
+                1: {
+                    answer: -27.17, // Q = m × c × ΔT = 100 × 4.18 × 65 = 27170 J = 27.17 kJ
+                    tolerance: 2,
+                    explanation: 'Q = m × c × ΔT = 100g × 4,18J/g°C × (85-20)°C = 27.170 J = 27,17 kJ. Como é combustão (exotérmica), ΔH = -27,17 kJ/mol'
+                },
+                2: {
+                    answer: 'exothermic',
+                    explanation: 'O gráfico mostra que os produtos têm menor entalpia que os reagentes (ΔH < 0), caracterizando uma reação exotérmica.'
+                },
+                3: {
+                    answers: { a: 'endothermic', b: 'exothermic' },
+                    explanation: 'a) Cozinhar um ovo requer energia (calor) externa - endotérmica. b) Explosão libera energia rapidamente - exotérmica.'
+                }
+            };
+            
+            const exercise = exercises[exerciseNum];
+            let feedback = '';
+            let isCorrect = false;
+            
+            if (exerciseNum === 1) {
+                const userAnswer = parseFloat(document.getElementById('ex1-answer').value);
+                const tolerance = exercise.tolerance;
+                isCorrect = Math.abs(userAnswer - exercise.answer) <= tolerance;
+                feedback = isCorrect ? 
+                    `<div class="text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded">✅ Correto! ${exercise.explanation}</div>` :
+                    `<div class="text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded">❌ Incorreto. ${exercise.explanation}</div>`;
+            } else if (exerciseNum === 2) {
+                const userAnswer = document.getElementById('ex2-answer').value;
+                isCorrect = userAnswer === exercise.answer;
+                feedback = isCorrect ?
+                    `<div class="text-green-600 bg-green-50 dark:bg-green-900/20 p-3 rounded">✅ Correto! ${exercise.explanation}</div>` :
+                    `<div class="text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded">❌ Incorreto. ${exercise.explanation}</div>`;
+            } else if (exerciseNum === 3) {
+                const userAnswerA = document.getElementById('ex3a-answer').value;
+                const userAnswerB = document.getElementById('ex3b-answer').value;
+                const correctA = userAnswerA === exercise.answers.a;
+                const correctB = userAnswerB === exercise.answers.b;
+                isCorrect = correctA && correctB;
+                
+                feedback = `<div class="p-3 rounded ${isCorrect ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-red-600 bg-red-50 dark:bg-red-900/20'}">
+                    ${correctA ? '✅' : '❌'} Item a: ${correctA ? 'Correto' : 'Incorreto'}<br>
+                    ${correctB ? '✅' : '❌'} Item b: ${correctB ? 'Correto' : 'Incorreto'}<br>
+                    <br>${exercise.explanation}
+                </div>`;
+            }
+            
+            document.getElementById(`ex${exerciseNum}-feedback`).innerHTML = feedback;
+            document.getElementById(`ex${exerciseNum}-feedback`).classList.remove('hidden');
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            updateScoreDisplay();
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.getElementById('mobile-nav').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
